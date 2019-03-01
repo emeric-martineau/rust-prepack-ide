@@ -1,0 +1,9 @@
+"*":
+  core:
+    telemetryConsent: "no"
+  "exception-reporting":
+    userId: "43a96f41-1a53-49dd-8ac1-7392deaf4973"
+  "ide-rust":
+    rlsToolchain: "nightly"
+  welcome:
+    showOnStartup: false
