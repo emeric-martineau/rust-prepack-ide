@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
@@ -19,4 +19,4 @@ docker run -v /dev/shm:/dev/shm \
            --init \
            -it \
            --rm \
-           "${DOCKER_IMAGE_NAME}" /bin/bash
+           "${DOCKER_IMAGE_NAME}" /usr/bin/atom -f

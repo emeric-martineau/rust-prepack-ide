@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
