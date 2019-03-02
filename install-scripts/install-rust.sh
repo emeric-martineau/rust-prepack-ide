@@ -1,4 +1,12 @@
-#!/bin/sh
+#!/bin/bash
+print_ok() {
+  echo " ${GREEN}✔${RESET}"
+}
+
+print_ko() {
+  echo " ${RED}✗${RESET}"
+}
+
 find_lastest_date_with_rls() {
   #date -d "19:00 today - 1 days" +'%Y-%m-%d %H:%M:%S'
   local check_date="$1"
@@ -35,16 +43,16 @@ find_rust_channel() {
   while [ ${count} -lt 30 ]; do
     local current_date="$(date -d '19:00 today - '${count}' days' +'%Y-%m-%d')"
 
-    echo -n "Check for nightly-${current_date}... "
+    echo -n "Check for nightly-${current_date}..."
 
     is_ok=$(find_lastest_date_with_rls ${current_date} ${arch})
 
     if [ "${is_ok}" = "true" ]; then
-      echo "OK!"
+      print_ok
       CHANNEL="nightly-${current_date}"
       return
     else
-      echo "no"
+      print_ko
     fi
 
     count=$(expr ${count} + 1)
@@ -71,7 +79,8 @@ install_rustup_components() {
       is_installed=$(echo $current_rustup_components | grep "${pck_name}")
 
       if [ -n "${is_installed}" ]; then
-        echo "Rustup package '${pck_name}' already installed"
+        echo -n "Rustup package '${pck_name}' already installed"
+        print_ok
       else
         rustup component add "${pck_name}" ${channel}
       fi
@@ -97,7 +106,8 @@ install_cargo_components() {
       is_installed=$(echo ${current_cargo_components} | grep "${pck_name}")
 
       if [ -n "${is_installed}" ]; then
-        echo "Cargo package '${pck_name}' already installed"
+        echo -n "Cargo package '${pck_name}' already installed"
+        print_ok
       else
         cargo ${channel} install "${pck_name}"
       fi
@@ -110,6 +120,10 @@ set_channel_in_atom_editor() {
   local line_number=$(cat "${filename}" | grep -n 'rlsToolchain' | cut -d ':' -f 1)
   sed -i ${line_number}'s/.*/    rlsToolchain: "'$1'"/' "${filename}"
 }
+
+RED=`tput setaf 1`
+GREEN=`tput setaf 2`
+RESET=`tput sgr0`
 
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"

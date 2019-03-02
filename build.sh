@@ -42,6 +42,7 @@ if [ $? -eq 0 ]; then
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
     -e USERNAME_TO_RUN_UID=${UID} \
+    -t \
     --rm \
     --init \
     "${DOCKER_IMAGE_NAME}" /bin/sh /install/install-scripts/install-atom-plugin.sh
@@ -55,6 +56,7 @@ if [ $? -eq 0 ]; then
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
     -e USERNAME_TO_RUN_UID=${UID} \
+    -t \
     --rm \
     --init \
     "${DOCKER_IMAGE_NAME}" /bin/sh /install/install-scripts/install-rust.sh
