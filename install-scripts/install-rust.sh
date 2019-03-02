@@ -1,14 +1,22 @@
 #!/bin/bash
+
+# Print tick in green.
 print_ok() {
   echo " ${GREEN}✔${RESET}"
 }
 
+# Print cross in red.
 print_ko() {
   echo " ${RED}✗${RESET}"
 }
 
+# Check if nightly build contains rls-preview.
+#
+# $1 nightly build date with format 'YYYY-MM-DD'
+# $2 arch name for rust
+#
+# print true or false
 find_lastest_date_with_rls() {
-  #date -d "19:00 today - 1 days" +'%Y-%m-%d %H:%M:%S'
   local check_date="$1"
   local arch="$2"
   local filename=/tmp/channel-rust-nightly.toml
@@ -32,6 +40,9 @@ find_lastest_date_with_rls() {
   fi
 }
 
+# Find lastest nightly channel with rls-preview.
+#
+# Value set in 'CHANNEL' environment variable
 find_rust_channel() {
   local arch="$(rustup show | grep 'Default host:' | cut -d ':' -f 2 | xargs)"
 
@@ -61,6 +72,10 @@ find_rust_channel() {
   CHANNEL=""
 }
 
+# Install rustup components.
+#
+# $1 list of components
+# $2 (optional) rust channel
 install_rustup_components() {
   local rustup_components="$1"
   local channel=""
@@ -88,6 +103,10 @@ install_rustup_components() {
   fi
 }
 
+# Install cargo components.
+#
+# $1 list of components
+# $2 (optional) rust channel
 install_cargo_components() {
   local cargo_components="$1"
   local channel=""
@@ -115,6 +134,7 @@ install_cargo_components() {
   fi
 }
 
+# Set nightly channel in atom config file for 'ide-rust' plugin.
 set_channel_in_atom_editor() {
   filename="${HOME}/.atom/config.cson"
   local line_number=$(cat "${filename}" | grep -n 'rlsToolchain' | cut -d ':' -f 1)
@@ -164,5 +184,4 @@ install_rustup_components "rls-preview rls rust-analysis rust-src" "${CHANNEL}"
 install_cargo_components "racer" "nightly"
 install_cargo_components "${CARGO_COMPONENTS}"
 
-# Replace channel in atom-editor
 set_channel_in_atom_editor "${CHANNEL}"
