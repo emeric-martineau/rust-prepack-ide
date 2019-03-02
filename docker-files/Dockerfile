@@ -12,7 +12,7 @@ ENV CARGO_BIN $cargo_bin
 
 RUN apt-get update
 RUN apt-get install -y \
-  curl bash build-essential sudo
+  curl bash build-essential sudo git
 
 ENV PATH "$PATH:${CARGO_BIN}"
 
