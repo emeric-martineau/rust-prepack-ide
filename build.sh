@@ -18,8 +18,8 @@ if [ ! -f atom.deb ]; then
   curl -o atom.deb -L https://atom-installer.github.com/v${ATOM_VERSION}/atom-amd64.deb
 fi
 
-create_volume "${RUST_HOME_VOLUME_NAME}"
-create_volume "${ATOM_HOME_VOLUME_NAME}"
+create_volume "${DOCKER_DOCKER_DOCKER_RUST_HOME_VOLUME_NAME}"
+create_volume "${DOCKER_DOCKER_DOCKER_ATOM_HOME_VOLUME_NAME}"
 
 docker build . \
   -t "${DOCKER_IMAGE_NAME}" \
@@ -36,8 +36,8 @@ if [ $? -eq 0 ]; then
   echo "Install atom plugin..."
 
   docker run \
-    -v ${ATOM_HOME_VOLUME_NAME}:/home/${USER} \
-    -v ${RUST_HOME_VOLUME_NAME}:/opt/rust \
+    -v ${DOCKER_DOCKER_DOCKER_ATOM_HOME_VOLUME_NAME}:/home/${USER} \
+    -v ${DOCKER_DOCKER_DOCKER_RUST_HOME_VOLUME_NAME}:/opt/rust \
     -v ${BASEDIR}:/install \
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
@@ -50,8 +50,8 @@ if [ $? -eq 0 ]; then
   echo "Install rust..."
 
   docker run \
-    -v ${ATOM_HOME_VOLUME_NAME}:/home/${USER} \
-    -v ${RUST_HOME_VOLUME_NAME}:/opt/rust \
+    -v ${DOCKER_DOCKER_DOCKER_ATOM_HOME_VOLUME_NAME}:/home/${USER} \
+    -v ${DOCKER_DOCKER_DOCKER_RUST_HOME_VOLUME_NAME}:/opt/rust \
     -v ${BASEDIR}:/install \
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
