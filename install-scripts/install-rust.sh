@@ -1,15 +1,5 @@
 #!/usr/bin/env bash
 
-# Print tick in green.
-print_ok() {
-  echo " ${GREEN}✔${RESET}"
-}
-
-# Print cross in red.
-print_ko() {
-  echo " ${RED}✗${RESET}"
-}
-
 # Check if nightly build contains rls-preview.
 #
 # $1 nightly build date with format 'YYYY-MM-DD'
@@ -141,14 +131,12 @@ set_channel_in_atom_editor() {
   sed -i ${line_number}'s/.*/    rlsToolchain: "'$1'"/' "${filename}"
 }
 
-RED=`tput setaf 1`
-GREEN=`tput setaf 2`
-RESET=`tput sgr0`
-
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
 . "${BASEDIR}/../config.cfg"
+
+. "${BASEDIR}/common.sh"
 
 if [ "$(whoami)" != "${USERNAME_TO_RUN}" ]; then
   sudo chown -R ${USERNAME_TO_RUN}:${USERNAME_TO_RUN} ${RUST_HOME}

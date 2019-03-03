@@ -2,7 +2,7 @@
 
 This project help you to have in few minutes a full Rust dev environment.
 
-By default, this project create a Docker image with Atom and minimum plugins for Rust.
+By default, this project create a Docker image with Atom or IntelliJ and minimum plugins for Rust.
 
 ## Setup
 
@@ -12,7 +12,7 @@ Edit `config.cfg` file:
  - `SOURCE_FOLDER` : your folder on host with your source files,
  - `DOCKER_IMAGE_NAME` : name of Docker image that will be create,
  - `DOCKER_RUST_HOME_VOLUME_NAME` : Docker volume contains all files for Rust,
- - `DOCKER_ATOM_HOME_VOLUME_NAME` : Docker volume to store your home in Docker container cause Atom store many files in,
+ - `DOCKER_EDITOR_HOME_VOLUME_NAME` : Docker volume to store your home in Docker container cause Atom store many files in,
  - `RUST_HOME` : folder of Rust installation that store in `DOCKER_RUST_HOME_VOLUME_NAME` Docker volume,
  - `RUSTUP_HOME` : Rust home,
  - `CARGO_HOME` : Rust cargo home,
@@ -46,5 +46,7 @@ Another Docker volume was created.
 
 If you don't want use Docker or you can't, you can use scripts to install Atom plugins,
 you can run `install-scripts/install-atom-plugin.sh` script.
+
+To install IntelliJ plugins, you can run `install-scripts/install-intellij-plugin.sh` script.
 
 To install Rust, run `install-scripts/install-rust.sh` script.
