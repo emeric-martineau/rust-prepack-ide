@@ -150,7 +150,9 @@ BASEDIR="$(dirname ${REALPATH})"
 
 . "${BASEDIR}/../config.cfg"
 
-sudo chown -R ${USERNAME_TO_RUN}:${USERNAME_TO_RUN} ${RUST_HOME}
+if [ "$(whoami)" != "${USERNAME_TO_RUN}" ]; then
+  sudo chown -R ${USERNAME_TO_RUN}:${USERNAME_TO_RUN} ${RUST_HOME}
+fi
 
 # Check if need install rust
 if [ ! -f "${CARGO_BIN}/rustup" ]; then

@@ -39,4 +39,12 @@ You can keep Rust's Docker volume with parameter `--keep-rust-home-volume`.
 
 To store all Rust channel, Rustup component, Cargo dependencies... A Docker volume was created.
 
-Atom store also many configuration (like open file, plugins config...) in `~/.config` folder. Another Docker volume was created.
+Atom store also many configuration (like open file, plugins config...) in `~/.config` folder.
+Another Docker volume was created.
+
+## Install without Docker
+
+If you don't want use Docker or you can't, you can use scripts to install Atom plugins,
+you can run `install-scripts/install-atom-plugin.sh` script.
+
+To install Rust, run `install-scripts/install-rust.sh` script.
