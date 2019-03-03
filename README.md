@@ -29,6 +29,12 @@ To build image, run `build.sh` script and wait because, it takes long time :)
 
 To run Atom, run `run.sh` script.
 
+## Remove image
+
+If you want remove image, just run `remove.sh` script.
+
+You can keep Rust's Docker volume with parameter `--keep-rust-home-volume`.
+
 ## How it's works
 
 To store all Rust channel, Rustup component, Cargo dependencies... A Docker volume was created.
