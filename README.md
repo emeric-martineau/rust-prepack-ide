@@ -2,7 +2,12 @@
 
 This project help you to have in few minutes a full Rust dev environment.
 
-By default, this project create a Docker image with Atom or IntelliJ and minimum plugins for Rust.
+By default, this project create a Docker image with editor and minimum plugins for Rust.
+
+## Supported editor
+
+- Atom,
+- IntelliJ.
 
 ## Setup
 
@@ -28,6 +33,8 @@ To build image, run `build.sh` script and wait because, it takes long time :)
 ## Run container
 
 To run Atom, run `run.sh` script.
+
+NOTE : you can to be root in container with `sudo su`.
 
 ## Remove image
 
