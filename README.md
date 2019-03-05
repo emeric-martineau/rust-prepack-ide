@@ -30,6 +30,8 @@ Edit `config.cfg` file:
 
 To build image, run `build.sh` script and wait because, it takes long time :)
 
+Editor, if need, is download in root directory to avoid download at each build.
+
 ## Run container
 
 To run Atom, run `run.sh` script.
