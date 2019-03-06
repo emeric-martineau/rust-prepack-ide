@@ -2,10 +2,22 @@
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
+
 UID=$(id -u ${USER})
 GID=$(id -g ${USER})
 
 . "${BASEDIR}/config.cfg"
+
+EDITOR="$1"
+EXEC_CMD=""
+
+case "${EDITOR}" in
+  "atom") EXEC_CMD="${ATOM_EXEC}";;
+  "intellij") EXEC_CMD="${INTELLIJ_EXEC}";;
+  *)
+    echo "Run script with option 'atom' or 'intellij'!" >&2
+    exit 1;;
+esac
 
 docker run -v /dev/shm:/dev/shm \
            -v ${DOCKER_EDITOR_HOME_VOLUME_NAME}:/home/${USER} \
@@ -19,4 +31,4 @@ docker run -v /dev/shm:/dev/shm \
            --init \
            -it \
            --rm \
-           "${DOCKER_IMAGE_NAME}" /usr/bin/atom -f
+           "${DOCKER_IMAGE_NAME}" ${EXEC_CMD}

@@ -16,10 +16,12 @@ RUN apt-get install -y \
 
 ENV PATH "$PATH:${CARGO_BIN}"
 
-#################################### ATOM #####################################
+################################## INTELLIJ ####################################
 COPY intellij.tar.gz /tmp/intellij.tar.gz
 
-RUN tar -xzf /tmp/intellij.tar.gz -C /opt/ && \
+RUN mkdir /opt/intellij
+
+RUN tar -xzf /tmp/intellij.tar.gz -C /opt/intellij --strip 1 && \
       rm -f /tmp/intellij.tar.gz
 
 COPY docker-files/entrypoint.sh /entrypoint.sh
