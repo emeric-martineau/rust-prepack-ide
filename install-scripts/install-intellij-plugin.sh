@@ -49,7 +49,7 @@ get_number() {
 # $1 Current IntelliJ version
 # $2 Version of IntelliJ supported by plugin
 #
-# Set environment variable IS_COMPATIBLE
+# return 0 if ok
 check_compatible_version() {
   local mini_version="$(echo $2 | cut -d '-' -f 1 | xargs)"
   local mini_major_version=$(get_number "${mini_version}" 1)
@@ -87,9 +87,9 @@ check_compatible_version() {
      ([ ${max_fix_version} -gt ${current_fix_version} ] ||
       [ ${max_fix_version} -eq ${current_fix_version} ])
     then
-    IS_COMPATIBLE="true"
+    return 0
   else
-    IS_COMPATIBLE="false"
+    return 1
   fi
 }
 
@@ -118,7 +118,7 @@ get_last_plugin_version() {
     plugin_compat_version="$(echo ${plugin_compat_version} | sed 's/—/-/' | sed 's/build //')"
     check_compatible_version "$1" "${plugin_compat_version}"
 
-    if [ "${IS_COMPATIBLE}" = "true" ]; then
+    if [ $? -eq 0 ]; then
       plugin_url="$(cat ${filename} | jq '.['${index}'].file' | xargs)"
 
       print_ok

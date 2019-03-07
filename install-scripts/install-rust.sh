@@ -24,9 +24,11 @@ find_lastest_date_with_rls() {
   if [ -n "${line}" ]; then
     local available=$(echo ${line} |  cut -d '=' -f 2 | xargs)
 
-    echo "${available}"
+    [ "${available}" = "true" ]
+
+    return $?
   else
-    echo "false"
+    return 1
   fi
 }
 
@@ -46,9 +48,9 @@ find_rust_channel() {
 
     echo -n "Check for nightly-${current_date}..."
 
-    is_ok=$(find_lastest_date_with_rls ${current_date} ${arch})
+    find_lastest_date_with_rls ${current_date} ${arch}
 
-    if [ "${is_ok}" = "true" ]; then
+    if [ $? -eq 0 ]; then
       print_ok
       CHANNEL="nightly-${current_date}"
       return
