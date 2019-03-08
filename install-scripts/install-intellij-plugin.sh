@@ -171,6 +171,11 @@ unpack_plugin() {
 
   echo -n "Unzip plugin..."
 
+  # Remove plugin if already installed
+  plugin_folder=$(unzip -Z1 $2 | head -1 | cut -d / -f 1)
+
+  rm -rf "${plugins_dir}${plugin_folder}"
+
   unzip "$2" -d "${plugins_dir}" 2>/dev/null
 
   if [ ! $? -eq 0 ]; then
@@ -240,19 +245,6 @@ PRODUCT_INFO="/opt/intellij/product-info.json"
 
 install_plugin "${INTELLIJ_PLUGIN}"
 
-# /opt/intelli/product-info.json
-# {
-#   "name": "IntelliJ IDEA",
-#   "version": "2018.3.5",
-#   "buildNumber": "183.5912.21",
-#   "productCode": "IC",
-#   "svgIconPath": "bin/idea.svg",
-#   "launch": [
-#     {
-#       "os": "Linux",
-#       "launcherPath": "bin/idea.sh",
-#       "vmOptionsFilePath": "bin/idea64.vmoptions",
-#       "startupWmClass": "jetbrains-idea-ce"
-#     }
-#   ]
-# }
+echo ${TMP_RUST_CHANNEL}
+
+rm -rf "${TMP_RUST_CHANNEL}"

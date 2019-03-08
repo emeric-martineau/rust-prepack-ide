@@ -50,20 +50,6 @@ if [ $? -eq 0 ]; then
   UID=$(id -u ${USER})
   GID=$(id -g ${USER})
 
-  echo "Install ${EDITOR} plugins..."
-
-  docker run \
-    -v ${DOCKER_EDITOR_HOME_VOLUME_NAME}:/home/${USER} \
-    -v ${DOCKER_RUST_HOME_VOLUME_NAME}:/opt/rust \
-    -v ${BASEDIR}:/install \
-    -e USERNAME_TO_RUN=${USER} \
-    -e USERNAME_TO_RUN_GID=${GID} \
-    -e USERNAME_TO_RUN_UID=${UID} \
-    -t \
-    --rm \
-    --init \
-    "${DOCKER_IMAGE_NAME}" /bin/sh /install/install-scripts/install-${EDITOR}-plugin.sh
-
   echo "Install rust..."
 
   docker run \
@@ -77,4 +63,18 @@ if [ $? -eq 0 ]; then
     --rm \
     --init \
     "${DOCKER_IMAGE_NAME}" /bin/sh /install/install-scripts/install-rust.sh
+    
+  echo "Install ${EDITOR} plugins..."
+
+  docker run \
+    -v ${DOCKER_EDITOR_HOME_VOLUME_NAME}:/home/${USER} \
+    -v ${DOCKER_RUST_HOME_VOLUME_NAME}:/opt/rust \
+    -v ${BASEDIR}:/install \
+    -e USERNAME_TO_RUN=${USER} \
+    -e USERNAME_TO_RUN_GID=${GID} \
+    -e USERNAME_TO_RUN_UID=${UID} \
+    -t \
+    --rm \
+    --init \
+    "${DOCKER_IMAGE_NAME}" /bin/sh /install/install-scripts/install-${EDITOR}-plugin.sh
 fi

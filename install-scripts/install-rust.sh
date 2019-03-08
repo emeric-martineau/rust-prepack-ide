@@ -126,13 +126,6 @@ install_cargo_components() {
   fi
 }
 
-# Set nightly channel in atom config file for 'ide-rust' plugin.
-set_channel_in_atom_editor() {
-  filename="${HOME}/.atom/config.cson"
-  local line_number=$(cat "${filename}" | grep -n 'rlsToolchain' | cut -d ':' -f 1)
-  sed -i ${line_number}'s/.*/    rlsToolchain: "'$1'"/' "${filename}"
-}
-
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
@@ -176,4 +169,4 @@ install_rustup_components "rls-preview rls rust-analysis rust-src" "${CHANNEL}"
 install_cargo_components "racer" "nightly"
 install_cargo_components "${CARGO_COMPONENTS}"
 
-set_channel_in_atom_editor "${CHANNEL}"
+echo "${CHANNEL}" > "${TMP_RUST_CHANNEL}"
