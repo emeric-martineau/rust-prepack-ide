@@ -12,7 +12,7 @@ ENV CARGO_BIN $cargo_bin
 
 RUN apt-get update
 RUN apt-get install -y \
-  curl bash build-essential sudo git jq openjdk-8-jdk
+  curl bash build-essential sudo git jq openjdk-8-jdk unzip
 
 ENV PATH "$PATH:${CARGO_BIN}"
 

@@ -115,7 +115,7 @@ get_last_plugin_version() {
     echo -n "  - Check if version '${plugin_version}' is compatible"
 
     # Clean utf8 code and 'build ' prefix
-    plugin_compat_version="$(echo ${plugin_compat_version} | sed 's/—/-/' | sed 's/build //')"
+    plugin_compat_version="$(echo ${plugin_compat_version} | sed 's/—/-/' | sed 's/build //' | sed 's/\*/9999/')"
     check_compatible_version "$1" "${plugin_compat_version}"
 
     if [ $? -eq 0 ]; then
@@ -139,9 +139,62 @@ get_last_plugin_version() {
   PLUGIN_DOWNLOAD_URL="${plugin_url}"
 }
 
+# Download a plugin into /tmp/plugin.zip
+#
+# $1 url of plugin from rest api
+# $2 output file
+download_plugin() {
+  local plugin_url="${JET_BRAIN_PLUGINS_URL}/files/$1"
+  local filename="$2"
+
+  echo -n "Download plugin..."
+
+  curl "${plugin_url}" --output ${filename} 2>/dev/null
+
+  if [ $? -eq 0 ]; then
+    print_ok
+    return 0
+  else
+    print_ko
+    return 1
+  fi
+}
+
+# Unpack plugin in folder of IntelliJ.
+#
+# $1 IntelliJ home
+# $2 plugin file
+unpack_plugin() {
+  local intellij_home="$1"
+  local plugins_dir="${intellij_home}/config/plugins/"
+  mkdir -p "${plugins_dir}"
+
+  echo -n "Unzip plugin..."
+
+  unzip "$2" -d "${plugins_dir}" 2>/dev/null
+
+  if [ ! $? -eq 0 ]; then
+    print_ko
+  fi
+}
+
+# Return home path of IntelliJ.
+#
+# echo home
+get_intellij_home_path() {
+  local productCode=$(cat ${PRODUCT_INFO} | jq '.productCode' | xargs)
+  local version=$(cat ${PRODUCT_INFO} | jq '.version' | xargs)
+  local version_majeur=$(get_number "${version}" 1)
+  local version_min=$(get_number "${version}" 2)
+  echo "${HOME}/.Idea${productCode}${version_majeur}.${version_min}"
+}
+
 install_plugin() {
+  local plugin_file="/tmp/plugin.zip"
+  local intellij_home="$(get_intellij_home_path)"
+
   for plugin in ${1}; do
-    echo "Download IntelliJ plugin '${plugin}' "
+    echo "Download IntelliJ plugin '${plugin}'"
 
     local plugin_url="$(get_plugin_url ${plugin})"
 
@@ -152,7 +205,9 @@ install_plugin() {
       local plugin_id="$(echo ${plugin_url} | cut -d '-' -f 1 | cut -d '/' -f 3)"
       get_last_plugin_version "${INTELLIJ_VERSION}" "${plugin_id}"
 
-      # Download plugin https://plugins.jetbrains.com/files/"${PLUGIN_DOWNLOAD_URL}"
+      download_plugin "${PLUGIN_DOWNLOAD_URL}" "${plugin_file}"
+
+      unpack_plugin "${intellij_home}" "${plugin_file}"
     fi
   done
 }
@@ -172,54 +227,32 @@ if [ -z "$(command -v jq)" ]; then
   exit 1
 fi
 
+if [ -z "$(command -v unzip)" ]; then
+  . "${BASEDIR}/common.sh"
+
+  echo -n "Unzip not found! Check 'unzip' is in path "
+  print_ko
+  exit 1
+fi
+
 JET_BRAIN_PLUGINS_URL="https://plugins.jetbrains.com"
+PRODUCT_INFO="/opt/intellij/product-info.json"
 
 install_plugin "${INTELLIJ_PLUGIN}"
 
-# https://plugins.jetbrains.com/search/suggest?product=idea_ce&term=toml
-#   ="Rust Toml"
-#
-# - Rust: https://plugins.jetbrains.com/plugins/nightly/8182
-# - TOML: https://plugins.jetbrains.com/plugins/nightly/8195
-# https://plugins.jetbrains.com/search/suggest?product=&term=rust
-# [{"value":"Rust","data":{"vendor":"JetBrains","url":"/plugin/8182-rust","target":"intellij"}},{"value":"Rust and Cargo Support","data":{"vendor":"JetBrains, s.r.o.","url":"/plugin/9044-rust-and-cargo-support","target":"teamcity"}}]
-#
-# jq '.[0].compatibleVersions.IDEA'
-#
-# sudo apt-get install jq
-#
-# channel ["nightly",""]
-#
-# https://plugins.jetbrains.com/api/plugins/8182/updates?channel=
-#
-# 1	{…}
-# id	58269
-# link	/plugin/8182-rust/update/58269
-# version	0.2.92.2116-183
-# approve	true
-# listed	true
-# cdate	1550149645000
-# file	8182/58269/intellij-rust-0.2.92.2116-183.zip
-# notes	<a href="https://intellij-rust.github.io/2019/02/14/changelog-92.html"> https://intellij-rust.github.io/2019/02/14/changelog-92.html </a>
-# since	183.0
-# until	183.*
-# sinceUntil	183—183.*
-# channel
-# size	4803124
-# compatibleVersions	{…}
-# APPCODE	2018.3 — 2018.3.5
-# IDEA_EDUCATIONAL	2018.3.1
-# RIDER	2018.3 — 2018.3.3
-# IDEA	2018.3 — 2018.3.5
-# ANDROID_STUDIO	build 183.0 — 183.*
-# RUBYMINE	2018.3 — 2018.3.5
-# PYCHARM_EDUCATIONAL	2018.3
-# CLION	2018.3 — 2018.3.4
-# DBE	2018.3 — 2018.3.3
-# PHPSTORM	2018.3 — 2018.3.4
-# PYCHARM_COMMUNITY	2018.3 — 2018.3.5
-# IDEA_COMMUNITY	2018.3 — 2018.3.5
-# WEBSTORM	2018.3 — 2018.3.5
-# GOLAND	2018.3 — 2018.3.5
-# MPS	2018.3 — 2018.3.4
-# PYCHARM	2018.3 — 2018.3.5
+# /opt/intelli/product-info.json
+# {
+#   "name": "IntelliJ IDEA",
+#   "version": "2018.3.5",
+#   "buildNumber": "183.5912.21",
+#   "productCode": "IC",
+#   "svgIconPath": "bin/idea.svg",
+#   "launch": [
+#     {
+#       "os": "Linux",
+#       "launcherPath": "bin/idea.sh",
+#       "vmOptionsFilePath": "bin/idea64.vmoptions",
+#       "startupWmClass": "jetbrains-idea-ce"
+#     }
+#   ]
+# }
