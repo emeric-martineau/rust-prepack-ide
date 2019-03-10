@@ -35,16 +35,11 @@ case "${EDITOR}" in
     exit 1;;
 esac
 
-create_volume "${DOCKER_RUST_HOME_VOLUME_NAME}"
-create_volume "${DOCKER_EDITOR_HOME_VOLUME_NAME}"
+create_volume "${DOCKER_HOME_VOLUME_NAME}"
 
 docker build . \
   -t "${DOCKER_IMAGE_NAME}" \
-  -f docker-files/Dockerfile.${EDITOR} \
-  --build-arg "rust_home=${RUST_HOME}" \
-  --build-arg "rustup_home=${RUSTUP_HOME}" \
-  --build-arg "cargo_home=${CARGO_HOME}" \
-  --build-arg "cargo_bin=${CARGO_BIN}"
+  -f docker-files/Dockerfile.${EDITOR}
 
 if [ $? -eq 0 ]; then
   UID=$(id -u ${USER})
@@ -53,22 +48,20 @@ if [ $? -eq 0 ]; then
   echo "Install rust..."
 
   docker run \
-    -v ${DOCKER_EDITOR_HOME_VOLUME_NAME}:/home/${USER} \
-    -v ${DOCKER_RUST_HOME_VOLUME_NAME}:/opt/rust \
+    -v ${DOCKER_HOME_VOLUME_NAME}:/home/${USER} \
     -v ${BASEDIR}:/install \
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
     -e USERNAME_TO_RUN_UID=${UID} \
-    -t \
+    -it \
     --rm \
     --init \
-    "${DOCKER_IMAGE_NAME}" /bin/sh /install/install-scripts/install-rust.sh
-    
+    "${DOCKER_IMAGE_NAME}" /bin/bash /install/install-scripts/install-rust.sh
+
   echo "Install ${EDITOR} plugins..."
 
   docker run \
-    -v ${DOCKER_EDITOR_HOME_VOLUME_NAME}:/home/${USER} \
-    -v ${DOCKER_RUST_HOME_VOLUME_NAME}:/opt/rust \
+    -v ${DOCKER_HOME_VOLUME_NAME}:/home/${USER} \
     -v ${BASEDIR}:/install \
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
@@ -76,5 +69,5 @@ if [ $? -eq 0 ]; then
     -t \
     --rm \
     --init \
-    "${DOCKER_IMAGE_NAME}" /bin/sh /install/install-scripts/install-${EDITOR}-plugin.sh
+    "${DOCKER_IMAGE_NAME}" /bin/bash /install/install-scripts/install-${EDITOR}-plugin.sh
 fi

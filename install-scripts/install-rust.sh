@@ -142,7 +142,7 @@ if [ ! -f "${CARGO_BIN}/rustup" ]; then
   curl https://sh.rustup.rs -sSf -o /tmp/install-rust.sh
   chmod u+x /tmp/install-rust.sh
 
-  /tmp/install-rust.sh --no-modify-path -v -y
+  /tmp/install-rust.sh -v -y
   rm /tmp/install-rust.sh
 fi
 

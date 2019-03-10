@@ -1,20 +1,10 @@
 FROM ubuntu:18.04
 
-ARG rust_home
-ARG rustup_home
-ARG cargo_home
-ARG cargo_bin
-
-ENV RUST_HOME $rust_home
-ENV RUSTUP_HOME $rustup_home
-ENV CARGO_HOME $cargo_home
-ENV CARGO_BIN $cargo_bin
-
 RUN apt-get update
 RUN apt-get install -y \
   curl bash build-essential sudo git
 
-ENV PATH "$PATH:${CARGO_BIN}"
+ENV PATH "$PATH:~/.cargo/bin"
 
 #################################### ATOM #####################################
 COPY atom.deb /tmp/atom.deb

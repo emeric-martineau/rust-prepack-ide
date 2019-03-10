@@ -245,6 +245,4 @@ PRODUCT_INFO="/opt/intellij/product-info.json"
 
 install_plugin "${INTELLIJ_PLUGIN}"
 
-echo ${TMP_RUST_CHANNEL}
-
 rm -rf "${TMP_RUST_CHANNEL}"
