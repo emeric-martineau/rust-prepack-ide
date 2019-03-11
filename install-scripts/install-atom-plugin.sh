@@ -13,6 +13,7 @@ REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
 . "${BASEDIR}/../config.cfg"
+. "${BASEDIR}/common.sh"
 
 # Check if apm is installed
 if [ -z "$(command -v apm)" ]; then
@@ -24,8 +25,6 @@ if [ -z "$(command -v apm)" ]; then
 fi
 
 CHANNEL=$(cat "${TMP_RUST_CHANNEL}")
-
-set_channel_in_atom_editor "${CHANNEL}"
 
 for pck_name in ${ATOM_PACKAGE}; do
   # Check if package is installed
@@ -40,5 +39,7 @@ done
 
 cp ${BASEDIR}/template/config.cson ~/.atom/config.cson
 cp ${BASEDIR}/template/terminal-commands.json ~/.atom/terminal-commands.json
+
+set_channel_in_atom_editor "${CHANNEL}"
 
 rm -rf "${TMP_RUST_CHANNEL}"
