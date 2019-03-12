@@ -97,10 +97,12 @@ check_compatible_version() {
 #
 # $1 IntelliJ version
 # $2 Id of plugin
+# $3 Plugin channel
 #
 # Set environment PLUGIN_DOWNLOAD_URL
 get_last_plugin_version() {
-  local plugin_marketplace_url="${JET_BRAIN_PLUGINS_URL}/api/plugins/$2/updates?channel="
+  local $channel="$3"
+  local plugin_marketplace_url="${JET_BRAIN_PLUGINS_URL}/api/plugins/$2/updates?channel=${channel}"
   local filename=/tmp/plugin.json
 
   curl "${plugin_marketplace_url}" --output ${filename} 2>/dev/null
@@ -194,9 +196,13 @@ get_intellij_home_path() {
   echo "${HOME}/.Idea${productCode}${version_majeur}.${version_min}"
 }
 
+# Install all plugin.
+#
+# $1 channel
 install_plugin() {
   local plugin_file="/tmp/plugin.zip"
   local intellij_home="$(get_intellij_home_path)"
+  local $channel="$1"
 
   for plugin in ${1}; do
     echo "Download IntelliJ plugin '${plugin}'"
@@ -208,7 +214,7 @@ install_plugin() {
       exit 1
     else
       local plugin_id="$(echo ${plugin_url} | cut -d '-' -f 1 | cut -d '/' -f 3)"
-      get_last_plugin_version "${INTELLIJ_VERSION}" "${plugin_id}"
+      get_last_plugin_version "${INTELLIJ_VERSION}" "${plugin_id}" "${channel}"
 
       download_plugin "${PLUGIN_DOWNLOAD_URL}" "${plugin_file}"
 
@@ -243,4 +249,4 @@ fi
 JET_BRAIN_PLUGINS_URL="https://plugins.jetbrains.com"
 PRODUCT_INFO="/opt/intellij/product-info.json"
 
-install_plugin "${INTELLIJ_PLUGIN}"
+install_plugin "${INTELLIJ_PLUGIN}" "${INTELLIJ_PLUGIN_CHANNEL}"
