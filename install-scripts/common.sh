@@ -13,4 +13,3 @@ print_ko() {
 RED=`tput setaf 1`
 GREEN=`tput setaf 2`
 RESET=`tput sgr0`
-TMP_RUST_CHANNEL="${HOME}/.rust.channel"

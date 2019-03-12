@@ -23,15 +23,15 @@ Edit `config.cfg` file:
 
 ## Build image
 
-To build image, run `build.sh` script and wait because, it takes long time :)
+To build image, run `build.sh atom | intellij` script and wait because, it takes long time :)
 
 Editor, if need, is download in root directory to avoid download at each build.
 
 ## Run container
 
-To run Atom, run `run.sh` script.
+To run Atom, run `run.sh atom` script.
 
-NOTE : you can to be root in container with `sudo su`.
+NOTE : you can to be root in container with `sudo su`. To run the shell instead of running the editor `run.sh <editor> --shell`
 
 ## Remove image
 

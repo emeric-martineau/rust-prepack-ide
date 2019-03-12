@@ -4,8 +4,6 @@ RUN apt-get update
 RUN apt-get install -y \
   curl bash build-essential sudo git
 
-ENV PATH "$PATH:~/.cargo/bin"
-
 #################################### ATOM #####################################
 COPY atom.deb /tmp/atom.deb
 

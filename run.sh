@@ -10,6 +10,7 @@ GID=$(id -g ${USER})
 
 EDITOR="$1"
 EXEC_CMD=""
+DCK_EXTRA_ARGS=""
 
 case "${EDITOR}" in
   "atom") EXEC_CMD="${ATOM_EXEC}";;
@@ -18,6 +19,11 @@ case "${EDITOR}" in
     echo "Run script with option 'atom' or 'intellij'!" >&2
     exit 1;;
 esac
+
+if [ "$2" = "--shell" ]; then
+  EXEC_CMD="/bin/bash"
+  DCK_EXTRA_ARGS="-it"
+fi
 
 docker run -v /dev/shm:/dev/shm \
            -v ${DOCKER_HOME_VOLUME_NAME}:/home/${USER} \
@@ -28,6 +34,5 @@ docker run -v /dev/shm:/dev/shm \
            -e USERNAME_TO_RUN_GID=${GID} \
            -e USERNAME_TO_RUN_UID=${UID} \
            --init \
-           -it \
-           --rm \
+           --rm ${DCK_EXTRA_ARGS} \
            "${DOCKER_IMAGE_NAME}" ${EXEC_CMD}

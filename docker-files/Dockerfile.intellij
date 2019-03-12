@@ -4,8 +4,6 @@ RUN apt-get update
 RUN apt-get install -y \
   curl bash build-essential sudo git jq openjdk-8-jdk unzip
 
-ENV PATH "$PATH:~/.cargo/bin"
-
 ################################## INTELLIJ ####################################
 COPY intellij.tar.gz /tmp/intellij.tar.gz
 

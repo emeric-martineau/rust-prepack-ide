@@ -11,4 +11,7 @@ echo "" >> /etc/sudoers
 echo "${USERNAME_TO_RUN} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 cd /home/${USERNAME_TO_RUN}/
+
+export PATH="${PATH}:/home/${USERNAME_TO_RUN}/.cargo/bin"
+
 exec runuser -u ${USERNAME_TO_RUN} -- "$@"
