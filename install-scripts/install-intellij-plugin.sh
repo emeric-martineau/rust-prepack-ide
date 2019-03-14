@@ -250,3 +250,5 @@ JET_BRAIN_PLUGINS_URL="https://plugins.jetbrains.com"
 PRODUCT_INFO="/opt/intellij/product-info.json"
 
 install_plugin "${INTELLIJ_PLUGIN}" "${INTELLIJ_PLUGIN_CHANNEL}"
+
+rm -rf "${TMP_RUST_CHANNEL}"

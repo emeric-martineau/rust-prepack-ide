@@ -1,5 +1,69 @@
 #!/usr/bin/env bash
 
+# Check if nightly build contains rls-preview.
+#
+# $1 nightly build date with format 'YYYY-MM-DD'
+# $2 arch name for rust
+#
+# print true or false
+find_lastest_date_with_rls() {
+  local check_date="$1"
+  local arch="$2"
+  local filename=/tmp/channel-rust-nightly.toml
+
+  curl https://static.rust-lang.org/dist/${check_date}/channel-rust-nightly.toml --output ${filename} 2>/dev/null
+
+  local line_number=$(cat "${filename}" | grep -n '\[pkg.rls-preview.target.'${arch}'\]' | cut -d ':' -f 1)
+  line_number="$(expr ${line_number} + 1)"
+
+  # Hope last line is 'available'
+  local line="$(sed ${line_number}'!d' "${filename}" | grep 'available')"
+
+  rm -f "${filename}"
+
+  if [ -n "${line}" ]; then
+    local available=$(echo ${line} |  cut -d '=' -f 2 | xargs)
+
+    [ "${available}" = "true" ]
+
+    return $?
+  else
+    return 1
+  fi
+}
+
+# Find lastest nightly channel with rls-preview.
+#
+# Value set in 'CHANNEL' environment variable
+find_rust_channel() {
+  local arch="$(rustup show | grep 'Default host:' | cut -d ':' -f 2 | xargs)"
+
+  echo "Search last available date of nightly channel for rls-preview"
+
+  # rls-preview never available on current day
+  local count=1
+
+  while [ ${count} -lt 30 ]; do
+    local current_date="$(date -d '19:00 today - '${count}' days' +'%Y-%m-%d')"
+
+    echo -n "Check for nightly-${current_date}..."
+
+    find_lastest_date_with_rls ${current_date} ${arch}
+
+    if [ $? -eq 0 ]; then
+      print_ok
+      CHANNEL="nightly-${current_date}"
+      return
+    else
+      print_ko
+    fi
+
+    count=$(expr ${count} + 1)
+  done
+
+  CHANNEL=""
+}
+
 # Install rustup components.
 #
 # $1 list of components
@@ -83,13 +147,39 @@ if [ ! -f "${CARGO_BIN}/rustup" ]; then
 fi
 
 # Install stable version if set
-if [ -n "${RUST_STABLE_CHANEL_VERSION}" ] && [ -z "$(rustup show | grep ${RUST_STABLE_CHANEL_VERSION})" ]; then
-  echo ${CARGO_BIN}/rustup install "${RUST_STABLE_CHANEL_VERSION}"
+if [ -n "${RUST_STABLE_CHANNEL_VERSION}" ]; then
+  if [ -z "$(rustup show | grep ${RUST_STABLE_CHANNEL_VERSION})" ]; then
+    rustup install "${RUST_STABLE_CHANNEL_VERSION}"
+  fi
+
+  CHANNEL="${RUST_STABLE_CHANNEL_VERSION}"
+else
+  CHANNEL="nightly"
 fi
 
-rustup install nightly
+# First install rust in nightly
+rustup install "${CHANNEL}"
 
-install_rustup_components "rls-preview rls rust-analysis rust-src" "nightly"
+# Check if installed
+rustup component add rls-preview --toolchain "${CHANNEL}" 2>/dev/null 1>&2
+
+# If not not installed
+if [ ! $? -eq 0 ]; then
+  # If channel start by nightly
+  if [[ "${CHANNEL}" == nightly* ]]; then
+    CHANNEL=""
+
+    find_rust_channel
+
+    if [ -z "${CHANNEL}" ]; then
+      echo "Can't find a valid nightly channel for 'rls-preview'!" >&2
+      exit 1
+    fi
+  fi
+fi
+
+echo "${CHANNEL}" > "${TMP_RUST_CHANNEL}"
+
 install_rustup_components "${RUSTUP_COMPONENTS}"
 
 install_cargo_components "racer" "nightly"

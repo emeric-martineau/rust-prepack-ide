@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+
+# Set nightly channel in atom config file for 'ide-rust' plugin.
+#
+# $1
+set_channel_in_atom_editor() {
+  filename="${HOME}/.atom/config.cson"
+  local line_number=$(cat "${filename}" | grep -n 'rlsToolchain' | cut -d ':' -f 1)
+  sed -i ${line_number}'s/.*/    rlsToolchain: "'$1'"/' "${filename}"
+}
+
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
@@ -13,6 +23,8 @@ if [ -z "$(command -v apm)" ]; then
   print_ko
   exit 1
 fi
+
+CHANNEL=$(cat "${TMP_RUST_CHANNEL}")
 
 for pck_name in ${ATOM_PACKAGE}; do
   # Check if package is installed
@@ -32,3 +44,7 @@ fi
 if [ ! -f "~/.atom/terminal-commands.json" ]; then
   cp ${BASEDIR}/template/terminal-commands.json ~/.atom/terminal-commands.json
 fi
+
+set_channel_in_atom_editor "${CHANNEL}"
+
+rm -rf "${TMP_RUST_CHANNEL}"
