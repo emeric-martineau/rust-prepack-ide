@@ -15,6 +15,7 @@ DCK_EXTRA_ARGS=""
 case "${EDITOR}" in
   "atom") EXEC_CMD="${ATOM_EXEC}";;
   "intellij") EXEC_CMD="${INTELLIJ_EXEC}";;
+  "vim") EXEC_CMD="${VIM_EXEC}"; DCK_EXTRA_ARGS="-it";;
   *)
     echo "Run script with option 'atom' or 'intellij'!" >&2
     exit 1;;

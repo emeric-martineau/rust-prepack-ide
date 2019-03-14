@@ -15,7 +15,7 @@ create_volume() {
 . "${BASEDIR}/config.cfg"
 
 if [ ! $# -eq 1 ]; then
-  echo "Run script with option 'atom' or 'intellij'!" >&2
+  echo "Run script with option 'atom', 'intellij' or 'vim'!" >&2
   exit 1
 fi
 
@@ -30,8 +30,9 @@ case "${EDITOR}" in
     if [ ! -f intellij.tar.gz ]; then
       curl -o intellij.tar.gz -L https://download.jetbrains.com/idea/ideaIC-${INTELLIJ_VERSION}-no-jdk.tar.gz
     fi;;
+  "vim");;
   *)
-    echo "Run script with option 'atom' or 'intellij'!" >&2
+    echo "Run script with option 'atom', 'intellij', 'vim'!" >&2
     exit 1;;
 esac
 
