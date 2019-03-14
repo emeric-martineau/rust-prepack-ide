@@ -5,7 +5,7 @@ RUN apt-get install -y \
   curl bash build-essential sudo git jq openjdk-8-jdk unzip
 
 ################################## INTELLIJ ####################################
-COPY intellij.tar.gz /tmp/intellij.tar.gz
+COPY download/intellij.tar.gz /tmp/intellij.tar.gz
 
 RUN mkdir /opt/intellij
 

@@ -101,7 +101,7 @@ check_compatible_version() {
 #
 # Set environment PLUGIN_DOWNLOAD_URL
 get_last_plugin_version() {
-  local $channel="$3"
+  local channel="$3"
   local plugin_marketplace_url="${JET_BRAIN_PLUGINS_URL}/api/plugins/$2/updates?channel=${channel}"
   local filename=/tmp/plugin.json
 
@@ -202,7 +202,7 @@ get_intellij_home_path() {
 install_plugin() {
   local plugin_file="/tmp/plugin.zip"
   local intellij_home="$(get_intellij_home_path)"
-  local $channel="$1"
+  local channel="$2"
 
   for plugin in ${1}; do
     echo "Download IntelliJ plugin '${plugin}'"
@@ -226,21 +226,17 @@ install_plugin() {
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
-. "${BASEDIR}/../config.cfg"
-. "${BASEDIR}/common.sh"
+. "${BASEDIR}/config.cfg"
+. "${BASEDIR}/../install-scripts/common.sh"
 
 # Check if apm is installed
 if [ -z "$(command -v jq)" ]; then
-  . "${BASEDIR}/common.sh"
-
   echo -n "Jq not found! Check 'jq' is in path "
   print_ko
   exit 1
 fi
 
 if [ -z "$(command -v unzip)" ]; then
-  . "${BASEDIR}/common.sh"
-
   echo -n "Unzip not found! Check 'unzip' is in path "
   print_ko
   exit 1
@@ -249,6 +245,6 @@ fi
 JET_BRAIN_PLUGINS_URL="https://plugins.jetbrains.com"
 PRODUCT_INFO="/opt/intellij/product-info.json"
 
-install_plugin "${INTELLIJ_PLUGIN}" "${INTELLIJ_PLUGIN_CHANNEL}"
+install_plugin "${PLUGINS}" "${PLUGINS_CHANNEL}"
 
 rm -rf "${TMP_RUST_CHANNEL}"

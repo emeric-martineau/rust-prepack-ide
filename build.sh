@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
+EDITOR_BASEDIR="${BASEDIR}/editors"
+DL_BASEDIR="${BASEDIR}/download"
 
 create_volume() {
   local VOLUME_NAME="$1"
@@ -14,33 +16,36 @@ create_volume() {
 
 . "${BASEDIR}/config.cfg"
 
-if [ ! $# -eq 1 ]; then
-  echo "Run script with option 'atom', 'intellij' or 'vim'!" >&2
+if [ ! $# -eq 1 ] || [ ! -d "${EDITOR_BASEDIR}/$1" ] ; then
+  echo -n "Run script with option " >&2
+  for editor in $(ls "${EDITOR_BASEDIR}"); do
+    echo -n "'${editor}' " >&2
+  done
+  echo "!" >&2
+
   exit 1
 fi
 
-EDITOR="$1"
+. "${BASEDIR}/config.cfg"
 
-case "${EDITOR}" in
-  "atom")
-    if [ ! -f atom.deb ]; then
-      curl -o atom.deb -L https://atom-installer.github.com/v${ATOM_VERSION}/atom-amd64.deb
-    fi;;
-  "intellij")
-    if [ ! -f intellij.tar.gz ]; then
-      curl -o intellij.tar.gz -L https://download.jetbrains.com/idea/ideaIC-${INTELLIJ_VERSION}-no-jdk.tar.gz
-    fi;;
-  "vim");;
-  *)
-    echo "Run script with option 'atom', 'intellij', 'vim'!" >&2
-    exit 1;;
-esac
+# Include editor config
+EDITOR="$1"
+. "${EDITOR_BASEDIR}/${EDITOR}/config.cfg"
+
+# Download file if need
+if [ -n "${DOWNLOAD_FILE}" ] && [ -n "${DOWNLOAD_URL}" ]; then
+  mkdir -p "${DL_BASEDIR}"
+
+  if [ ! -f "${DL_BASEDIR}/${DOWNLOAD_FILE}" ]; then
+    curl -o "${DL_BASEDIR}/${DOWNLOAD_FILE}" -L "${DOWNLOAD_URL}"
+  fi
+fi
 
 create_volume "${DOCKER_HOME_VOLUME_NAME}"
 
 docker build . \
   -t "${DOCKER_IMAGE_NAME}" \
-  -f docker-files/Dockerfile.${EDITOR}
+  -f "${EDITOR_BASEDIR}/${EDITOR}/Dockerfile"
 
 if [ $? -eq 0 ]; then
   UID=$(id -u ${USER})
@@ -64,11 +69,12 @@ if [ $? -eq 0 ]; then
   docker run \
     -v ${DOCKER_HOME_VOLUME_NAME}:/home/${USER} \
     -v ${BASEDIR}:/install \
+    -v "${EDITOR_BASEDIR}/${EDITOR}":/install/editor \
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
     -e USERNAME_TO_RUN_UID=${UID} \
     -t \
     --rm \
     --init \
-    "${DOCKER_IMAGE_NAME}" /bin/bash /install/install-scripts/install-${EDITOR}-plugin.sh
+    "${DOCKER_IMAGE_NAME}" /bin/bash /install/editor/install-plugin.sh
 fi
