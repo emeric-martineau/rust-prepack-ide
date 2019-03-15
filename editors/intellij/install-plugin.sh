@@ -198,7 +198,8 @@ get_intellij_home_path() {
 
 # Install all plugin.
 #
-# $1 channel
+# $1 plugin list
+# $2 channel
 install_plugin() {
   local plugin_file="/tmp/plugin.zip"
   local intellij_home="$(get_intellij_home_path)"
