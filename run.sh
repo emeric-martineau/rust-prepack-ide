@@ -1,28 +1,30 @@
 #!/usr/bin/env sh
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
-
+EDITOR_BASEDIR="${BASEDIR}/editors"
 
 UID=$(id -u ${USER})
 GID=$(id -g ${USER})
 
 . "${BASEDIR}/config.cfg"
 
+if [ ! $# -eq 1 ] || [ ! -d "${EDITOR_BASEDIR}/$1" ] ; then
+  echo -n "Run script with option " >&2
+  for editor in $(ls "${EDITOR_BASEDIR}"); do
+    echo -n "'${editor}' " >&2
+  done
+  echo "!" >&2
+
+  exit 1
+fi
+
+# Include editor config
 EDITOR="$1"
-EXEC_CMD=""
+. "${EDITOR_BASEDIR}/${EDITOR}/config.cfg"
 DCK_EXTRA_ARGS=""
 
-case "${EDITOR}" in
-  "atom") EXEC_CMD="${ATOM_EXEC}";;
-  "intellij") EXEC_CMD="${INTELLIJ_EXEC}";;
-  "vim") EXEC_CMD="${VIM_EXEC}"; DCK_EXTRA_ARGS="-it";;
-  *)
-    echo "Run script with option 'atom' or 'intellij'!" >&2
-    exit 1;;
-esac
-
 if [ "$2" = "--shell" ]; then
-  EXEC_CMD="/bin/bash"
+  EXEC="/bin/bash"
   DCK_EXTRA_ARGS="-it"
 fi
 
@@ -36,4 +38,4 @@ docker run -v /dev/shm:/dev/shm \
            -e USERNAME_TO_RUN_UID=${UID} \
            --init \
            --rm ${DCK_EXTRA_ARGS} \
-           "${DOCKER_IMAGE_NAME}" ${EXEC_CMD}
+           "${DOCKER_IMAGE_NAME}" ${EXEC}

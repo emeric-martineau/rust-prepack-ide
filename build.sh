@@ -26,8 +26,6 @@ if [ ! $# -eq 1 ] || [ ! -d "${EDITOR_BASEDIR}/$1" ] ; then
   exit 1
 fi
 
-. "${BASEDIR}/config.cfg"
-
 # Include editor config
 EDITOR="$1"
 . "${EDITOR_BASEDIR}/${EDITOR}/config.cfg"

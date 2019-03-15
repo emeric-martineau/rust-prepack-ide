@@ -12,13 +12,11 @@ set_channel_in_atom_editor() {
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
-. "${BASEDIR}/../config.cfg"
-. "${BASEDIR}/common.sh"
+. "${BASEDIR}/config.cfg"
+. "${BASEDIR}/../install-scripts/common.sh"
 
 # Check if apm is installed
 if [ -z "$(command -v apm)" ]; then
-  . "${BASEDIR}/common.sh"
-
   echo -n "Atom not found! Check 'apm' is in path "
   print_ko
   exit 1
@@ -26,7 +24,7 @@ fi
 
 CHANNEL=$(cat "${TMP_RUST_CHANNEL}")
 
-for pck_name in ${ATOM_PACKAGE}; do
+for pck_name in ${PLUGINS}; do
   # Check if package is installed
   IS_INSTALLED=$(apm list --installed --bare | grep "${pck_name}")
 

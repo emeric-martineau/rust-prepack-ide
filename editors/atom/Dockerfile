@@ -5,7 +5,7 @@ RUN apt-get install -y \
   curl bash build-essential sudo git
 
 #################################### ATOM #####################################
-COPY atom.deb /tmp/atom.deb
+COPY download/atom.deb /tmp/atom.deb
 
 RUN apt-get install -y ca-certificates curl fakeroot gconf2 gconf-service git \
     gvfs-bin libasound2 libcap2 libgconf-2-4 libgtk2.0-0 libnotify4 libnss3 \
