@@ -7,29 +7,37 @@ By default, this project create a Docker image with editor and minimum plugins f
 ## Supported editor
 
 - Atom,
-- IntelliJ CE.
+- IntelliJ CE,
+- Vim.
 
 ## Setup
 
 Edit `config.cfg` file:
- - `ATOM_VERSION` : version of Atom you want install,
- - `ATOM_PACKAGE` : plugins package. Add yours.
- - `SOURCE_FOLDER` : your folder on host with your source files,
- - `DOCKER_IMAGE_NAME` : name of Docker image that will be create,
- - `DOCKER_HOME_VOLUME_NAME` : Docker volume contains all files for Rust an your container home,
- - `RUST_STABLE_CHANEL_VERSION` : stable channel that you install (empty to install latest),
- - `RUSTUP_COMPONENTS` : Additional Rustup components,
- - `CARGO_COMPONENTS` : Cargo components.
+ - `SOURCE_FOLDER`: your folder on host with your source files,
+ - `DOCKER_IMAGE_NAME`: name of Docker image that will be create,
+ - `DOCKER_HOME_VOLUME_NAME`: Docker volume contains all files for Rust an your container home,
+ - `RUST_STABLE_CHANEL_VERSION`: stable channel that you install (empty to install latest),
+ - `RUSTUP_COMPONENTS`: Additional Rustup components,
+ - `CARGO_COMPONENTS`: Cargo components.
+
+## Editor setup
+
+Edit `editors/<editor>/config.cfg` file:
+ - `PLUGINS`: plugins list,
+ - `PLUGINS_CHANNEL`: plugin channel,
+ - `EXEC`: command to launch editor,
+ - `DOWNLOAD_FILE`: name of editor file downloaded in `download` folder,
+ - `DOWNLOAD_URL`: url of editor install file.
 
 ## Build image
 
-To build image, run `build.sh atom | intellij` script and wait because, it takes long time :)
+To build image, run `build.sh <editor>` script and wait because, it takes long time :)
 
 Editor, if need, is download in root directory to avoid download at each build.
 
 ## Run container
 
-To run Atom, run `run.sh atom` script.
+To run Atom, run `run.sh <editor>` script.
 
 NOTE : you can to be root in container with `sudo su`. To run the shell instead of running the editor `run.sh <editor> --shell`
 
@@ -49,9 +57,7 @@ A volume corresponding to the home user was created to store all these files.
 
 ## Install without Docker
 
-If you don't want use Docker or you can't, you can use scripts to install Atom plugins,
-you can run `install-scripts/install-atom-plugin.sh` script.
-
-To install IntelliJ plugins, you can run `install-scripts/install-intellij-plugin.sh` script.
+If you don't want use Docker or you can't, you can use scripts to install editor's plugins,
+you can run `editors/<editor>/install-plugin.sh` script.
 
 To install Rust, run `install-scripts/install-rust.sh` script.

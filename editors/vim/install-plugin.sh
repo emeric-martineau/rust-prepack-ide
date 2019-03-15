@@ -2,14 +2,43 @@
 
 # From https://raw.githubusercontent.com/ivanceras/rustupefy/master/setup.sh
 
-## make vim directories
+# Install all plugin.
+#
+# $1 plugin list
+install_plugin() {
+  for plugin in ${1}; do
+    echo -n "Install plugin '${plugin}'"
+
+    if [ -d "${PLUGINS_BASEDIR}/${plugin}" ]; then
+      chmod u+x "${PLUGINS_BASEDIR}/${plugin}/install.sh"
+
+      "${PLUGINS_BASEDIR}/${plugin}/install.sh"
+
+      if [ $? -eq 0 ]; then
+        print_ok
+      else
+        print_ko
+      fi
+    else
+      echo -n " [folder plugin missing]"
+      print_ko
+    fi
+  done
+}
+
+REALPATH="$(realpath $0)"
+BASEDIR="$(dirname ${REALPATH})"
+PLUGINS_BASEDIR="${BASEDIR}/plugins"
+
+. "${BASEDIR}/config.cfg"
+. "${BASEDIR}/../install-scripts/common.sh"
+
+# make vim directories
 mkdir -p $HOME/.vim/autoload $HOME/.vim/bundle $HOME/.vim/plugin/
 
-## install pathogen
-curl -LSso $HOME/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+install_plugin "${PLUGINS}"
 
-## go to working directory
-cd $HOME/.vim/bundle
+exit
 
 ## Update or install
 
