@@ -67,12 +67,12 @@ if [ $? -eq 0 ]; then
   docker run \
     -v ${DOCKER_HOME_VOLUME_NAME}:/home/${USER} \
     -v ${BASEDIR}:/install \
-    -v "${EDITOR_BASEDIR}/${EDITOR}":/install/editor \
+    -v "${EDITOR_BASEDIR}/${EDITOR}":/editor \
     -e USERNAME_TO_RUN=${USER} \
     -e USERNAME_TO_RUN_GID=${GID} \
     -e USERNAME_TO_RUN_UID=${UID} \
     -t \
     --rm \
     --init \
-    "${DOCKER_IMAGE_NAME}" /bin/bash /install/editor/install-plugin.sh
+    "${DOCKER_IMAGE_NAME}" /bin/bash /editor/install-plugin.sh /install
 fi

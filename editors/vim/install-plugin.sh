@@ -31,7 +31,14 @@ BASEDIR="$(dirname ${REALPATH})"
 PLUGINS_BASEDIR="${BASEDIR}/plugins"
 
 . "${BASEDIR}/config.cfg"
-. "${BASEDIR}/../install-scripts/common.sh"
+
+if [ -n "$1" ]; then
+  SCRIPTS_BASEDIR="$1/install-scripts"
+else
+  SCRIPTS_BASEDIR="${BASEDIR}/../../install-scripts"
+fi
+
+. "${SCRIPTS_BASEDIR}/common.sh"
 
 # make vim directories
 mkdir -p $HOME/.vim/autoload $HOME/.vim/bundle $HOME/.vim/plugin/
@@ -39,22 +46,6 @@ mkdir -p $HOME/.vim/autoload $HOME/.vim/bundle $HOME/.vim/plugin/
 install_plugin "${PLUGINS}"
 
 exit
-
-## Update or install
-
-## copy the vimrc file
-curl -LSso $HOME/.vimrc https://raw.githubusercontent.com/ivanceras/rustupefy/master/vimrc
-
-## update or install nerdtree PLUGIN #1
-if [ -d $HOME/.vim/bundle/nerdtree ]; then
-  # Add let g:NERDTreeDirArrows=0
-    echo "Updating existing nerdtree plugin"
-    cd $HOME/.vim/bundle/nerdtree/
-    git pull
-else
-    echo "Installing nerdtree plugin"
-    git clone --depth 1 --branch master https://github.com/scrooloose/nerdtree.git $HOME/.vim/bundle/nerdtree/
-fi
 
 ## update or install rust.vim PLUGIN #2
 if [ -d $HOME/.vim/bundle/rust.vim ]; then

@@ -228,7 +228,14 @@ REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 
 . "${BASEDIR}/config.cfg"
-. "${BASEDIR}/../install-scripts/common.sh"
+
+if [ -n "$1" ]; then
+  SCRIPTS_BASEDIR="$1/install-scripts"
+else
+  SCRIPTS_BASEDIR="${BASEDIR}/../../install-scripts"
+fi
+
+. "${SCRIPTS_BASEDIR}/common.sh"
 
 # Check if apm is installed
 if [ -z "$(command -v jq)" ]; then
