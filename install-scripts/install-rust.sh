@@ -175,6 +175,9 @@ if [ ! $? -eq 0 ]; then
       echo "Can't find a valid nightly channel for 'rls-preview'!" >&2
       exit 1
     fi
+
+    # Install rustup channel
+    rustup install "${CHANNEL}"
   fi
 fi
 
