@@ -47,16 +47,6 @@ install_plugin "${PLUGINS}"
 
 exit
 
-## update or install rust.vim PLUGIN #2
-if [ -d $HOME/.vim/bundle/rust.vim ]; then
-    echo "Updating existing rust.vim"
-    cd $HOME/.vim/bundle/rust.vim/
-    git pull
-else
-    echo "Installing rust.vim plugin"
-    git clone --depth 1 --branch master https://github.com/rust-lang/rust.vim.git $HOME/.vim/bundle/rust.vim
-fi
-
 ## update or install vim-airline PLUGIN #3
 if [ -d $HOME/.vim/bundle/vim-airline ]; then
     echo "Updating existing vim-airline plugin"
