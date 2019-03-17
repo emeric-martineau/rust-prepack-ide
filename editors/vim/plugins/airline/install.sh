@@ -7,7 +7,7 @@ cat <<EOF >>${HOME}/.vimrc
 
 "---------------------------------[ airline ]-----------------------------------
 "use the power line fonts
-let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 0
 
 "This will allow the airline plugin to load up as soon as you start editing a file
 set laststatus=2
