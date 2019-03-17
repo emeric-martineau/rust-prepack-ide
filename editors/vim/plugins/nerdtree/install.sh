@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
 
-NERDTREE_FOLDER="${HOME}/.vim/bundle/nerdtree"
-
-if [ -d "${NERDTREE_FOLDER}" ]; then
-  echo -n " (updating)"
-  cd "${NERDTREE_FOLDER}"
-  git pull
-else
-  git clone --depth 1 --branch master https://github.com/scrooloose/nerdtree.git "${NERDTREE_FOLDER}"
-fi
+install_plugin "${HOME}/.vim/bundle/nerdtree" https://github.com/scrooloose/nerdtree.git master
 
 # Enable plugin
 cat <<EOF >>${HOME}/.vimrc

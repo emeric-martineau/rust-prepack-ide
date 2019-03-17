@@ -2,10 +2,25 @@
 
 # From https://raw.githubusercontent.com/ivanceras/rustupefy/master/setup.sh
 
+# Install on plugin
+#
+# $1 plugin folder
+# $2 git url
+# $3 git branch
+install_plugin() {
+  if [ -d "$1" ]; then
+    echo -n " (updating)"
+    cd "$1"
+    git pull >/dev/null 2>&1
+  else
+    git clone --depth 1 --branch "$3" "$2" "$1" >/dev/null 2>&1
+  fi
+}
+
 # Install all plugin.
 #
 # $1 plugin list
-install_plugin() {
+install_plugins() {
   for plugin in ${1}; do
     echo -n "Install plugin '${plugin}'"
 
@@ -43,30 +58,6 @@ fi
 # make vim directories
 mkdir -p $HOME/.vim/autoload $HOME/.vim/bundle $HOME/.vim/plugin/
 
-install_plugin "${PLUGINS}"
+export -f install_plugin
 
-exit
-
-## update or install vim-airline PLUGIN #3
-if [ -d $HOME/.vim/bundle/vim-airline ]; then
-    echo "Updating existing vim-airline plugin"
-    cd $HOME/.vim/bundle/vim-airline/
-    git pull
-elsep
-    echo "Installing vim-airline plugin"
-    git clone --depth 1 --branch master https://github.com/bling/vim-airline $HOME/.vim/bundle/vim-airline
-fi
-
-## update or install vim-numbertoggle PLUGIN #4
-if [ -d $HOME/.vim/bundle/vim-numbertoggle ]; then
-    echo "Updating existing $HOME/.vim/bundle/vim-numbertoggle plugin"
-    cd $HOME/.vim/bundle/vim-numbertoggle/
-    git pull
-else
-    echo "Installing vim-numbertoggle plugin"
-    git clone --depth 1 --branch master git://github.com/jeffkreeftmeijer/vim-numbertoggle.git $HOME/.vim/bundle/numbertoggle
-fi
-
-
-## update vim-racer PLUGIN #5
-curl -LSso $HOME/.vim/plugin/racer.vim https://raw.githubusercontent.com/racer-rust/vim-racer/master/ftplugin/rust_racer.vim
+install_plugins "${PLUGINS}"
