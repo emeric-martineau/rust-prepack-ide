@@ -8,7 +8,7 @@ GID=$(id -g ${USER})
 
 . "${BASEDIR}/config.cfg"
 
-if [ ! $# -eq 1 ] || [ ! -d "${EDITOR_BASEDIR}/$1" ] ; then
+if [ $# -eq 0 ] || [ ! -d "${EDITOR_BASEDIR}/$1" ] ; then
   echo -n "Run script with option " >&2
   for editor in $(ls "${EDITOR_BASEDIR}"); do
     echo -n "'${editor}' " >&2
@@ -21,7 +21,6 @@ fi
 # Include editor config
 EDITOR="$1"
 . "${EDITOR_BASEDIR}/${EDITOR}/config.cfg"
-DCK_EXTRA_ARGS=""
 
 if [ "$2" = "--shell" ]; then
   EXEC="/bin/bash"
