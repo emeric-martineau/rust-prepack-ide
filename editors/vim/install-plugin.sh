@@ -60,4 +60,6 @@ mkdir -p $HOME/.vim/autoload $HOME/.vim/bundle $HOME/.vim/plugin/
 
 export -f install_plugin
 
+cp "${BASEDIR}/.vimrc" "${HOME}"
+
 install_plugins "${PLUGINS}"
