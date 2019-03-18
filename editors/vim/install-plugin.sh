@@ -55,6 +55,8 @@ fi
 
 . "${SCRIPTS_BASEDIR}/common.sh"
 
+export TMP_RUST_CHANNEL
+
 # make vim directories
 mkdir -p $HOME/.vim/autoload $HOME/.vim/bundle $HOME/.vim/plugin/
 
@@ -63,3 +65,5 @@ export -f install_plugin
 cp "${BASEDIR}/.vimrc" "${HOME}"
 
 install_plugins "${PLUGINS}"
+
+rm -rf "${TMP_RUST_CHANNEL}"

@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
+install_plugin "${HOME}/.vim/bundle/vim-racer" https://github.com/racer-rust/vim-racer.git master
 
-PLUGIN_FILE="${HOME}/.vim/plugin/racer.vim"
+FILE_PLUGIN="${HOME}/.vim/plugin/rust_racer.vim"
 
-if [ -f "${PLUGIN_FILE}" ]; then
-  echo -n " (updating)"
+if [ -f "${FILE_PLUGIN}" ]; then
+  rm -rf "${FILE_PLUGIN}"
 fi
 
-curl -LSso "${PLUGIN_FILE}" https://raw.githubusercontent.com/racer-rust/vim-racer/master/ftplugin/rust_racer.vim
+ln -s "${HOME}/.vim/bundle/vim-racer/ftplugin/rust_racer.vim" "${FILE_PLUGIN}"
+
+CHANNEL=$(cat "${TMP_RUST_CHANNEL}")
+
+RUST_SYS_ROOT=$(rustup run "${CHANNEL}" rustc --print sysroot)
+
+# Enable plugin
+cat <<EOF >>${HOME}/.vimrc
+
+"---------------------------------[ racer ]-------------------------------------
+au FileType rust nmap gd <Plug>(rust-def)
+au FileType rust nmap gs <Plug>(rust-def-split)
+au FileType rust nmap gx <Plug>(rust-def-vertical)
+au FileType rust nmap <leader>gd <Plug>(rust-doc)
+
+let \$RUST_SRC_PATH="${RUST_SYS_ROOT}/lib/rustlib/src/rust/src"
+"-------------------------------------------------------------------------------
+
+EOF

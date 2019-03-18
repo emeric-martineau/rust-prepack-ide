@@ -150,6 +150,7 @@ fi
 if [ -n "${RUST_STABLE_CHANNEL_VERSION}" ]; then
   if [ -z "$(rustup show | grep ${RUST_STABLE_CHANNEL_VERSION})" ]; then
     rustup install "${RUST_STABLE_CHANNEL_VERSION}"
+    rustup component add rls-preview rust-src rust-analysis --toolchain "${RUST_STABLE_CHANNEL_VERSION}"
   fi
 
   CHANNEL="${RUST_STABLE_CHANNEL_VERSION}"
@@ -159,6 +160,9 @@ fi
 
 # First install rust in nightly
 rustup install "${CHANNEL}"
+
+# Install always for stable channel
+rustup component add rls-preview rust-src rust-analysis
 
 # Check if installed
 rustup component add rls-preview --toolchain "${CHANNEL}" 2>/dev/null 1>&2
@@ -175,6 +179,8 @@ if [ ! $? -eq 0 ]; then
       echo "Can't find a valid nightly channel for 'rls-preview'!" >&2
       exit 1
     fi
+
+    rustup component add rust-src rust-analysis --toolchain "${CHANNEL}"
 
     # Install rustup channel
     rustup install "${CHANNEL}"
