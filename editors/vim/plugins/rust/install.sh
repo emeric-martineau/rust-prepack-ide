@@ -2,7 +2,8 @@
 
 install_plugin "${HOME}/.vim/bundle/rust.vim" https://github.com/rust-lang/rust.vim.git master
 
-# Enable plugin
+if [ $? -eq 0 ]; then
+  # Enable plugin
 cat <<EOF >>${HOME}/.vimrc
 
 "----------------------------------[ rust ]-------------------------------------
@@ -10,3 +11,6 @@ cat <<EOF >>${HOME}/.vimrc
 "-------------------------------------------------------------------------------
 
 EOF
+else
+  exit 1
+fi

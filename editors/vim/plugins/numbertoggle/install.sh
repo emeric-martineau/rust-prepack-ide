@@ -2,6 +2,7 @@
 
 install_plugin "${HOME}/.vim/bundle/vim-numbertoggle" https://github.com/jeffkreeftmeijer/vim-numbertoggle.git master
 
+if [ $? -eq 0 ]; then
 # Enable plugin
 cat <<EOF >>${HOME}/.vimrc
 
@@ -17,3 +18,6 @@ nnoremap <silent> <C-n> :set relativenumber!<cr>
 "-------------------------------------------------------------------------------
 
 EOF
+else
+  exit 1
+fi

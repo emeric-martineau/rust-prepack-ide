@@ -2,6 +2,7 @@
 
 install_plugin "${HOME}/.vim/bundle/nerdtree" https://github.com/scrooloose/nerdtree.git master
 
+if [ $? -eq 0 ]; then
 # Enable plugin
 cat <<EOF >>${HOME}/.vimrc
 
@@ -18,3 +19,6 @@ let g:NERDTreeDirArrowCollapsible = '~'
 "-------------------------------------------------------------------------------
 
 EOF
+else
+  exit 1
+fi

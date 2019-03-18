@@ -11,9 +11,13 @@ install_plugin() {
   if [ -d "$1" ]; then
     echo -n " (updating)"
     cd "$1"
-    git pull >/dev/null 2>&1
+    git pull >"${INSTALL_PLUGIN_VIM_LOGFILE}" 2>&1
+
+    return $?
   else
-    git clone --depth 1 --branch "$3" "$2" "$1" >/dev/null 2>&1
+    git clone --depth 1 --branch "$3" "$2" "$1" >"${INSTALL_PLUGIN_VIM_LOGFILE}" 2>&1
+
+    return $?
   fi
 }
 
@@ -32,6 +36,7 @@ install_plugins() {
       if [ $? -eq 0 ]; then
         print_ok
       else
+        cat "${INSTALL_PLUGIN_VIM_LOGFILE}"
         print_ko
       fi
     else
@@ -44,6 +49,8 @@ install_plugins() {
 REALPATH="$(realpath $0)"
 BASEDIR="$(dirname ${REALPATH})"
 PLUGINS_BASEDIR="${BASEDIR}/plugins"
+export INSTALL_PLUGIN_VIM_LOGFILE="/tmp/install_plugin_vim.log"
+
 
 . "${BASEDIR}/config.cfg"
 
@@ -66,4 +73,4 @@ cp "${BASEDIR}/.vimrc" "${HOME}"
 
 install_plugins "${PLUGINS}"
 
-rm -rf "${TMP_RUST_CHANNEL}"
+rm -rf "${TMP_RUST_CHANNEL}" "${INSTALL_PLUGIN_VIM_LOGFILE}"

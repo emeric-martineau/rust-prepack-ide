@@ -2,6 +2,7 @@
 
 install_plugin "${HOME}/.vim/bundle/vim-airline" https://github.com/bling/vim-airline.git master
 
+if [ $? -eq 0 ]; then
 # Enable plugin
 cat <<EOF >>${HOME}/.vimrc
 
@@ -17,3 +18,6 @@ set t_Co=256
 "-------------------------------------------------------------------------------
 
 EOF
+else
+  exit 1
+fi
