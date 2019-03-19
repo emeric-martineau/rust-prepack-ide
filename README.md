@@ -61,3 +61,22 @@ If you don't want use Docker or you can't, you can use scripts to install editor
 you can run `editors/<editor>/install-plugin.sh` script.
 
 To install Rust, run `install-scripts/install-rust.sh` script.
+
+## Contributing
+
+### Open issue first
+
+Before create a PR, please make an issue to be sur you idea will be accepted and
+that not another people work on.
+
+### Add new Editor
+
+If you want add a new editor, look in `editors` folder to see how it's work.
+
+You mist create three files :
+ - Dockerfile,
+ - config.cfg
+ - install-plugin.sh
+
+ In `install-plugin.sh` the environment variable `TMP_RUST_CHANNEL` is file where
+ `install-rust.sh` script write channel of rust.
