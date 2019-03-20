@@ -33,7 +33,7 @@ Edit `editors/<editor>/config.cfg` file:
 
 To build image, run `build.sh <editor>` script and wait because, it takes long time :)
 
-Editor, if need, is download in root directory to avoid download at each build.
+Editor, if need, is download in `download` folder to avoid download at each build.
 
 ## Run container
 
