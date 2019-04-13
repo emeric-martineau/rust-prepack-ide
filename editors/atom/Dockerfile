@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+ARG LINUX_EXTRA_PACKAGES
+
 RUN apt-get update
 RUN apt-get install -y \
   curl bash build-essential sudo git

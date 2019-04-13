@@ -42,6 +42,7 @@ fi
 create_volume "${DOCKER_HOME_VOLUME_NAME}"
 
 docker build . \
+  --build-arg "LINUX_EXTRA_PACKAGES=${LINUX_EXTRA_PACKAGES}" \
   -t "${DOCKER_IMAGE_NAME}" \
   -f "${EDITOR_BASEDIR}/${EDITOR}/Dockerfile"
 
