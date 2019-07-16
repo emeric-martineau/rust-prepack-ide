@@ -12,20 +12,20 @@ get_plugin_url() {
   curl "${plugin_marketplace_url}$1" --output ${filename} 2>/dev/null
 
   local index=0
-  local plugin_name="$(cat ${filename} | jq '.['${index}'].value' | xargs)"
+  local plugin_name="$(cat ${filename} | jq -r '.['${index}'].value' | xargs)"
   local plugin_url='null'
 
   # If 'null', index doesn't exists
   while [ "null" != "${plugin_name}" ]; do
     if [ "$1" = "${plugin_name}" ]; then
       # It's our plugin !
-      plugin_url="$(cat ${filename} | jq '.['${index}'].data.url' | xargs)"
+      plugin_url="$(cat ${filename} | jq -r '.['${index}'].data.url' | xargs)"
 
       # To break while
       plugin_name='null'
     else
       index=$(expr ${index} + 1)
-      plugin_name="$(cat ${filename} | jq '.['${index}'].value')"
+      plugin_name="$(cat ${filename} | jq -r '.['${index}'].value')"
     fi
   done
 
@@ -108,8 +108,9 @@ get_last_plugin_version() {
   curl "${plugin_marketplace_url}" --output ${filename} 2>/dev/null
 
   local index=0
-  local plugin_version="$(cat ${filename} | jq '.['${index}'].version' | xargs)"
-  local plugin_compat_version="$(cat ${filename} | jq '.['${index}'].compatibleVersions.IDEA_COMMUNITY' | xargs)"
+  local plugin_version="$(cat ${filename} | jq -r '.['${index}'].version' | cut -d '-' -f 1 | xargs)"
+  # Format can be  "IDEA_COMMUNITY":"2019.2 (eap)"
+  local plugin_compat_version="$(cat ${filename} | jq -r '.['${index}'].compatibleVersions.IDEA_COMMUNITY' | sed 's/—/-/' | sed 's/\(eap\)//'  | xargs)"
   local plugin_url='null'
 
   # If 'null', index doesn't exists
@@ -117,11 +118,11 @@ get_last_plugin_version() {
     echo -n "  - Check if version '${plugin_version}' is compatible"
 
     # Clean utf8 code and 'build ' prefix
-    plugin_compat_version="$(echo ${plugin_compat_version} | sed 's/—/-/' | sed 's/build //' | sed 's/\*/9999/')"
+    plugin_compat_version="$(echo ${plugin_compat_version} | sed 's/—/-/' | sed 's/build //' | sed 's/\*/9999/'  | sed 's/[^0-9.-]*//g' | xargs)"
     check_compatible_version "$1" "${plugin_compat_version}"
 
     if [ $? -eq 0 ]; then
-      plugin_url="$(cat ${filename} | jq '.['${index}'].file' | xargs)"
+      plugin_url="$(cat ${filename} | jq -r '.['${index}'].file' | xargs)"
 
       print_ok
 
@@ -131,8 +132,8 @@ get_last_plugin_version() {
       print_ko
 
       index=$(expr ${index} + 1)
-      local plugin_version="$(cat ${filename} | jq '.['${index}'].version' | xargs)"
-      local plugin_compat_version="$(cat ${filename} | jq '.['${index}'].compatibleVersions.IDEA_COMMUNITY' | xargs)"
+      local plugin_version="$(cat ${filename} | jq -r '.['${index}'].version' | cut -d '-' -f 1 | xargs)"
+      local plugin_compat_version="$(cat ${filename} | jq -r '.['${index}'].compatibleVersions.IDEA_COMMUNITY' | sed 's/—/-/' | sed 's/\(eap\)//' | xargs)"
     fi
   done
 
@@ -214,7 +215,7 @@ install_plugin() {
       print_ko
       exit 1
     else
-      local plugin_id="$(echo ${plugin_url} | cut -d '-' -f 1 | cut -d '/' -f 3)"
+      local plugin_id="$(echo ${plugin_url} | cut -d '-' -f 1 | cut -d '/' -f 3 | xargs)"
       get_last_plugin_version "${INTELLIJ_VERSION}" "${plugin_id}" "${channel}"
 
       download_plugin "${PLUGIN_DOWNLOAD_URL}" "${plugin_file}"
