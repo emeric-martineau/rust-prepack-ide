@@ -6,7 +6,7 @@
 #
 # print url
 get_plugin_url() {
-  local plugin_marketplace_url="${JET_BRAIN_PLUGINS_URL}/search/suggest?product=idea_ce&term="
+  local plugin_marketplace_url="${JET_BRAIN_PLUGINS_URL}/api/searchSuggest?isIDERequest=false&term="
   local filename=/tmp/plugin_marketplace.json
 
   curl "${plugin_marketplace_url}$1" --output ${filename} 2>/dev/null
@@ -19,7 +19,7 @@ get_plugin_url() {
   while [ "null" != "${plugin_name}" ]; do
     if [ "$1" = "${plugin_name}" ]; then
       # It's our plugin !
-      plugin_url="$(cat ${filename} | jq -r '.['${index}'].data.url' | xargs)"
+      plugin_url="$(cat ${filename} | jq -r '.['${index}'].url' | xargs)"
 
       # To break while
       plugin_name='null'
